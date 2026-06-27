@@ -91,16 +91,16 @@ const insertMovie = db.prepare(
 );
 
 const moviesData = [
-  ['流浪地球3', 'https://upload.wikimedia.org/wikipedia/en/1/1b/The_Wandering_Earth_film_poster.jpg', '郭帆', '吴京,刘德华,李雪健', '科幻', '中国大陆', 2026, 150, 9.2, '太阳即将毁灭，人类带着地球逃离太阳系寻找新家园。', 'playing'],
-  ['封神第三部', 'https://upload.wikimedia.org/wikipedia/en/d/d2/Creation_of_the_Gods_I_Kingdom_of_Storms.jpg', '乌尔善', '费翔,李雪健,黄渤', '奇幻', '中国大陆', 2026, 145, 8.8, '殷商末年，天下大乱，各路神仙妖怪纷纷登场。', 'playing'],
-  ['满江红2', 'https://upload.wikimedia.org/wikipedia/en/a/a6/Full_River_Red_Poster.jpg', '张艺谋', '沈腾,易烊千玺,雷佳音', '悬疑', '中国大陆', 2026, 135, 8.5, '南宋绍兴年间，一桩惊天阴谋在岳飞府中展开。', 'playing'],
-  ['消失的她2', 'https://upload.wikimedia.org/wikipedia/en/0/01/Lost_in_the_Stars_2023.webp', '陈思诚', '朱一龙,倪妮,文咏珊', '悬疑', '中国大陆', 2026, 120, 8.0, '一对夫妻在海岛度假时，妻子突然消失。', 'playing'],
-  ['唐人街探案4', 'https://upload.wikimedia.org/wikipedia/en/5/51/Detective_Chinatown_poster.jpeg', '陈思诚', '王宝强,刘昊然,妻夫木聪', '喜剧', '中国大陆', 2026, 130, 7.8, '唐仁和秦风再次踏上探案之旅。', 'playing'],
-  ['你好世界', 'https://upload.wikimedia.org/wikipedia/en/a/a8/HELLOWORLD.jpg', '伊藤智彦', '北村匠海,松坂桃李', '爱情', '日本', 2026, 98, 8.3, '一个发生在京都的青春爱情故事。', 'playing'],
-  ['功夫熊猫5', 'https://upload.wikimedia.org/wikipedia/en/7/76/Kungfupanda.jpg', '迈克·米切尔', '杰克·布莱克,安吉丽娜·朱莉', '动画', '美国', 2026, 95, 8.1, '阿宝再次踏上冒险之旅保护和平谷。', 'playing'],
-  ['速度与激情11', 'https://upload.wikimedia.org/wikipedia/en/2/2d/The_Fate_of_The_Furious_Theatrical_Poster.jpg', '林诣彬', '范·迪塞尔,杰森·莫玛', '动作', '美国', 2026, 140, 7.5, '多姆和他的团队面临最终极的挑战。', 'upcoming'],
-  ['长安三万里2', 'https://upload.wikimedia.org/wikipedia/en/6/6d/Chang%27an.webp', '谢君伟', '（配音）', '动画', '中国大陆', 2026, 160, 0, '盛唐诗人高适回忆与李白的友情故事。', 'upcoming'],
-  ['深海2', 'https://upload.wikimedia.org/wikipedia/en/9/99/Deep_Sea_2023_poster.jpg', '田晓鹏', '（配音）', '动画', '中国大陆', 2026, 115, 0, '少女在深海世界的奇幻冒险继续。', 'upcoming'],
+  ['流浪地球3', '/posters/1.jpg', '郭帆', '吴京,刘德华,李雪健', '科幻', '中国大陆', 2026, 150, 9.2, '太阳即将毁灭，人类带着地球逃离太阳系寻找新家园。', 'playing'],
+  ['封神第三部', '/posters/2.jpg', '乌尔善', '费翔,李雪健,黄渤', '奇幻', '中国大陆', 2026, 145, 8.8, '殷商末年，天下大乱，各路神仙妖怪纷纷登场。', 'playing'],
+  ['满江红2', '/posters/3.jpg', '张艺谋', '沈腾,易烊千玺,雷佳音', '悬疑', '中国大陆', 2026, 135, 8.5, '南宋绍兴年间，一桩惊天阴谋在岳飞府中展开。', 'playing'],
+  ['消失的她2', '/posters/4.webp', '陈思诚', '朱一龙,倪妮,文咏珊', '悬疑', '中国大陆', 2026, 120, 8.0, '一对夫妻在海岛度假时，妻子突然消失。', 'playing'],
+  ['唐人街探案4', '/posters/5.jpeg', '陈思诚', '王宝强,刘昊然,妻夫木聪', '喜剧', '中国大陆', 2026, 130, 7.8, '唐仁和秦风再次踏上探案之旅。', 'playing'],
+  ['你好世界', '/posters/6.jpg', '伊藤智彦', '北村匠海,松坂桃李', '爱情', '日本', 2026, 98, 8.3, '一个发生在京都的青春爱情故事。', 'playing'],
+  ['功夫熊猫5', '/posters/7.jpg', '迈克·米切尔', '杰克·布莱克,安吉丽娜·朱莉', '动画', '美国', 2026, 95, 8.1, '阿宝再次踏上冒险之旅保护和平谷。', 'playing'],
+  ['速度与激情11', '/posters/8.jpg', '林诣彬', '范·迪塞尔,杰森·莫玛', '动作', '美国', 2026, 140, 7.5, '多姆和他的团队面临最终极的挑战。', 'upcoming'],
+  ['长安三万里2', '/posters/9.webp', '谢君伟', '（配音）', '动画', '中国大陆', 2026, 160, 0, '盛唐诗人高适回忆与李白的友情故事。', 'upcoming'],
+  ['深海2', '/posters/10.jpg', '田晓鹏', '（配音）', '动画', '中国大陆', 2026, 115, 0, '少女在深海世界的奇幻冒险继续。', 'upcoming'],
 ];
 
 for (const m of moviesData) {
