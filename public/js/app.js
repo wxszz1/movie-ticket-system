@@ -203,13 +203,9 @@ document.addEventListener('DOMContentLoaded', () => {
     renderProfile(container);
   });
 
-  router.on('/admin', (container) => {
-    container.innerHTML = `
-      <div class="empty-state">
-        <h2>后台管理</h2>
-        <p>功能开发中...</p>
-      </div>
-    `;
+  router.on('/admin', async (container) => {
+    const { renderAdmin } = await import('./pages/admin.js');
+    renderAdmin(container);
   });
 
   // Resolve initial route
