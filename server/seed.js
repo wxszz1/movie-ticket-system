@@ -1,8 +1,8 @@
 const db = require('./db');
-const crypto = require('crypto');
+const bcrypt = require('bcryptjs');
 
 function hashPassword(password) {
-  return crypto.createHash('sha256').update(password).digest('hex');
+  return bcrypt.hashSync(password, 10);
 }
 
 // 清空所有数据（重置自增ID计数器）
