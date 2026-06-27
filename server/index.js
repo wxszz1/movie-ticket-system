@@ -15,10 +15,14 @@ app.use(express.static(path.join(__dirname, '../public')));
 
 // 所有非 API 请求返回 index.html（支持前端路由）
 app.get('/{*splat}', (req, res) => {
-  if (!req.path.startsWith('/api')) {
-    res.sendFile(path.join(__dirname, '../public/index.html'));
+  if (req.path.startsWith('/api')) {
+    return res.status(404).json({ error: 'API not found' });
   }
+  res.sendFile(path.join(__dirname, '../public/index.html'));
 });
+
+// 启动时自动初始化数据库表
+require('./init-tables');
 
 app.listen(PORT, () => {
   console.log(`服务器运行在 http://localhost:${PORT}`);
