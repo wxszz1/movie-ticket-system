@@ -59,10 +59,10 @@ function renderOrderItem(order) {
   const seatLabels = (order.seat_info || []).map(s => s.label).join('、');
   const showTime = order.show_time || '';
   const statusMap = {
-    pending: { text: '待支付', color: 'var(--color-warning)' },
-    paid: { text: '已支付', color: 'var(--color-success)' },
-    cancelled: { text: '已取消', color: 'var(--color-text-secondary)' },
-    refunded: { text: '已退款', color: 'var(--color-danger)' },
+    pending: { text: '待支付', color: '#d48806' },
+    paid: { text: '已支付', color: '#389e0d' },
+    cancelled: { text: '已取消', color: '#999' },
+    refunded: { text: '已退款', color: '#cf1322' },
   };
   const status = statusMap[order.status] || { text: order.status, color: 'var(--color-text-secondary)' };
 
