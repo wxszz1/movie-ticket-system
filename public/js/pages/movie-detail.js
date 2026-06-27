@@ -22,7 +22,7 @@ export async function renderMovieDetail(container, params) {
     container.innerHTML = `
       <div class="card" style="display:flex; gap:30px;">
         <img src="${movie.poster}" style="width:250px; border-radius:8px;"
-             onerror="this.src='https://via.placeholder.com/250x375?text=${encodeURIComponent(movie.title)}'">
+             onerror="this.src='/posters/${movie.id}.svg'">
         <div>
           <h1 style="margin-bottom:10px;">${movie.title}</h1>
           <p style="color:#666; margin-bottom:5px;">${genre} | ${movie.region} | ${movie.duration}分钟 | ${movie.year}</p>

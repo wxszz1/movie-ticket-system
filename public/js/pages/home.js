@@ -43,7 +43,7 @@ function renderMovieList(container, movies) {
     const genre = (movie.genre || '').split(',').slice(0, 2).join(' / ');
     return `
       <div class="movie-card" onclick="location.hash='#/movie/${movie.id}'">
-        <img src="${movie.poster}" alt="${movie.title}" onerror="this.src='https://via.placeholder.com/300x450?text=${encodeURIComponent(movie.title)}'">
+        <img src="${movie.poster}" alt="${movie.title}" onerror="this.src='/posters/${movie.id}.svg'">
         <div class="info">
           <div class="title">${movie.title}</div>
           <div class="meta">${genre} | ${movie.region}</div>
