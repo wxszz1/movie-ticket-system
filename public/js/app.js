@@ -198,13 +198,9 @@ document.addEventListener('DOMContentLoaded', () => {
     renderOrders(container);
   });
 
-  router.on('/profile', (container) => {
-    container.innerHTML = `
-      <div class="empty-state">
-        <h2>个人中心</h2>
-        <p>功能开发中...</p>
-      </div>
-    `;
+  router.on('/profile', async (container) => {
+    const { renderProfile } = await import('./pages/profile.js');
+    renderProfile(container);
   });
 
   router.on('/admin', (container) => {
