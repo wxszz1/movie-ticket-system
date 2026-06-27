@@ -1,2 +1,4 @@
 node_modules/
 server/movie.db
+server/movie.db-shm
+server/movie.db-wal
