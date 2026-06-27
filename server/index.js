@@ -27,6 +27,9 @@ app.use('/api/cinemas', cinemaRoutes);
 const scheduleRoutes = require('./routes/schedules');
 app.use('/api/schedules', scheduleRoutes);
 
+const seatRoutes = require('./routes/seats');
+app.use('/api/seats', seatRoutes);
+
 // 所有非 API 请求返回 index.html（支持前端路由）
 app.get('/{*splat}', (req, res) => {
   if (req.path.startsWith('/api')) {
