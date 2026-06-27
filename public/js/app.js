@@ -187,6 +187,12 @@ document.addEventListener('DOMContentLoaded', () => {
     renderMovieDetail(container, params);
   });
 
+  // Seat picker page
+  router.on('/book/:scheduleId', async (container, params) => {
+    const { renderSeatPicker } = await import('./pages/seat-picker.js');
+    renderSeatPicker(container, params);
+  });
+
   router.on('/orders', (container) => {
     container.innerHTML = `
       <div class="empty-state">

@@ -596,6 +596,24 @@ tr:hover td {
   font-size: 0.95rem;
 }
 
+/* ===== Seat Picker SVG ===== */
+.seat-picker {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.seat-svg-wrapper svg {
+  display: inline-block;
+}
+
+.seat-svg-wrapper svg .seat-rect {
+  transition: fill 0.15s, opacity 0.15s;
+}
+
+.seat-svg-wrapper svg .seat-rect:hover {
+  filter: brightness(1.15);
+}
+
 /* ===== Responsive ===== */
 @media (max-width: 768px) {
   .navbar {

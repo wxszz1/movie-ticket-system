@@ -7,9 +7,14 @@ const router = express.Router();
 // 获取场次的座位图
 router.get('/schedule/:scheduleId', (req, res) => {
   const schedule = db.prepare(`
-    SELECT s.*, h.layout_config
+    SELECT s.id, s.movie_id, s.hall_id, s.show_time, s.price, s.member_price, s.status,
+           h.layout_config, h.name as hall_name,
+           m.title as movie_title,
+           c.name as cinema_name
     FROM schedules s
     JOIN halls h ON s.hall_id = h.id
+    JOIN movies m ON s.movie_id = m.id
+    JOIN cinemas c ON h.cinema_id = c.id
     WHERE s.id = ?
   `).get(req.params.scheduleId);
 
