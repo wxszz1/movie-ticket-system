@@ -87,7 +87,7 @@ window.markMovie = async (movieId, status) => {
     return;
   }
   try {
-    await api.post('/user-movies', { movie_id: movieId, status });
+    await api.post('/users/user-movies', { movie_id: movieId, status });
     alert(status === 'want' ? '已标记想看' : '已标记看过');
   } catch (err) {
     alert(err.message);

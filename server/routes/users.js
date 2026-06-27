@@ -86,4 +86,30 @@ router.get('/movies', authMiddleware, (req, res) => {
   res.json(movies);
 });
 
+// 标记想看/看过
+router.post('/user-movies', authMiddleware, (req, res) => {
+  const { movie_id, status } = req.body;
+
+  if (!movie_id || !status) {
+    return res.status(400).json({ error: '缺少 movie_id 或 status' });
+  }
+
+  if (!['want', 'saw'].includes(status)) {
+    return res.status(400).json({ error: 'status 必须是 want 或 saw' });
+  }
+
+  // Upsert: insert or update status
+  const existing = db.prepare(
+    'SELECT id FROM user_movies WHERE user_id = ? AND movie_id = ?'
+  ).get(req.user.id, movie_id);
+
+  if (existing) {
+    db.prepare('UPDATE user_movies SET status = ? WHERE id = ?').run(status, existing.id);
+  } else {
+    db.prepare('INSERT INTO user_movies (user_id, movie_id, status) VALUES (?, ?, ?)').run(req.user.id, movie_id, status);
+  }
+
+  res.json({ message: status === 'want' ? '已标记想看' : '已标记看过' });
+});
+
 module.exports = router;
