@@ -15,6 +15,9 @@ app.use(express.static(path.join(__dirname, '../public')));
 const authRoutes = require('./routes/auth');
 app.use('/api/auth', authRoutes);
 
+const userRoutes = require('./routes/users');
+app.use('/api/users', userRoutes);
+
 // 所有非 API 请求返回 index.html（支持前端路由）
 app.get('/{*splat}', (req, res) => {
   if (req.path.startsWith('/api')) {
