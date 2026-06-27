@@ -11,7 +11,9 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../public')));
 
-// API 路由将在这里挂载（后续任务添加）
+// API 路由
+const authRoutes = require('./routes/auth');
+app.use('/api/auth', authRoutes);
 
 // 所有非 API 请求返回 index.html（支持前端路由）
 app.get('/{*splat}', (req, res) => {
