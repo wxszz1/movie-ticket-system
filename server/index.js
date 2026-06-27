@@ -36,6 +36,15 @@ app.use('/api/orders', orderRoutes);
 const recommendRoutes = require('./routes/recommend');
 app.use('/api/recommend', recommendRoutes);
 
+const adminRoutes = require('./routes/admin');
+app.use('/api/admin', adminRoutes);
+
+const couponRoutes = require('./routes/coupons');
+app.use('/api/coupons', couponRoutes);
+
+const reviewRoutes = require('./routes/reviews');
+app.use('/api/reviews', reviewRoutes);
+
 // 所有非 API 请求返回 index.html（支持前端路由）
 app.get('/{*splat}', (req, res) => {
   if (req.path.startsWith('/api')) {
