@@ -175,14 +175,16 @@ document.addEventListener('DOMContentLoaded', () => {
     renderRegister(container);
   });
 
-  // Placeholder routes for future pages
-  router.on('/', (container) => {
-    container.innerHTML = `
-      <div class="empty-state">
-        <h2>欢迎使用电影票务系统</h2>
-        <p>请浏览电影列表或登录后查看更多功能</p>
-      </div>
-    `;
+  // Home page - movie listings
+  router.on('/', async (container) => {
+    const { renderHome } = await import('./pages/home.js');
+    renderHome(container);
+  });
+
+  // Movie detail page
+  router.on('/movie/:id', async (container, params) => {
+    const { renderMovieDetail } = await import('./pages/movie-detail.js');
+    renderMovieDetail(container, params);
   });
 
   router.on('/orders', (container) => {
