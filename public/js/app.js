@@ -193,13 +193,9 @@ document.addEventListener('DOMContentLoaded', () => {
     renderSeatPicker(container, params);
   });
 
-  router.on('/orders', (container) => {
-    container.innerHTML = `
-      <div class="empty-state">
-        <h2>我的订单</h2>
-        <p>功能开发中...</p>
-      </div>
-    `;
+  router.on('/orders', async (container) => {
+    const { renderOrders } = await import('./pages/orders.js');
+    renderOrders(container);
   });
 
   router.on('/profile', (container) => {

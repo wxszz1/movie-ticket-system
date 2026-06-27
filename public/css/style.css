@@ -584,6 +584,142 @@ tr:hover td {
   border-color: #e94560;
 }
 
+/* ===== Order List ===== */
+.order-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px 0;
+}
+
+.order-item {
+  background: #fafafa;
+  border-radius: 8px;
+  padding: 16px;
+  border: 1px solid #eee;
+}
+
+.order-main {
+  display: flex;
+  gap: 16px;
+}
+
+.order-poster {
+  width: 80px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 6px;
+  flex-shrink: 0;
+  background: #eee;
+}
+
+.order-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  gap: 12px;
+}
+
+.order-title {
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: #1a1a2e;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.order-status {
+  font-weight: 600;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.order-meta {
+  font-size: 0.85rem;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.order-price {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #e94560;
+  margin-top: 8px;
+}
+
+.order-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #eee;
+}
+
+.order-no {
+  font-size: 0.8rem;
+  color: #999;
+}
+
+.order-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.order-qr {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #eee;
+  text-align: center;
+}
+
+.qr-placeholder {
+  display: inline-block;
+  padding: 16px 32px;
+  background: #fff;
+  border: 2px dashed #ddd;
+  border-radius: 8px;
+}
+
+.qr-code-label {
+  display: block;
+  font-size: 0.8rem;
+  color: #999;
+  margin-bottom: 4px;
+}
+
+.qr-code-value {
+  display: block;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  letter-spacing: 2px;
+}
+
+@media (max-width: 768px) {
+  .order-main {
+    flex-direction: column;
+  }
+
+  .order-poster {
+    width: 100%;
+    height: 160px;
+  }
+
+  .order-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}
+
 /* ===== Empty State ===== */
 .empty-state {
   text-align: center;
