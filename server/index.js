@@ -30,6 +30,9 @@ app.use('/api/schedules', scheduleRoutes);
 const seatRoutes = require('./routes/seats');
 app.use('/api/seats', seatRoutes);
 
+const orderRoutes = require('./routes/orders');
+app.use('/api/orders', orderRoutes);
+
 // 所有非 API 请求返回 index.html（支持前端路由）
 app.get('/{*splat}', (req, res) => {
   if (req.path.startsWith('/api')) {
