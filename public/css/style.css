@@ -302,10 +302,12 @@ img {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
-.movie-card .movie-poster {
+.movie-card .movie-poster,
+.movie-card img {
   width: 100%;
   aspect-ratio: 2/3;
   object-fit: cover;
+  display: block;
   background: #eee;
 }
 
