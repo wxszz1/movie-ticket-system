@@ -3,9 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>电影票务系统</title>
+  <title>电影推荐与票务系统</title>
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-  <h1>电影票务系统</h1>
+  <nav class="navbar">
+    <div class="nav-brand">
+      <a href="#/">🎬 电影票务</a>
+    </div>
+    <div class="nav-links">
+      <a href="#/">首页</a>
+      <a href="#/orders">我的订单</a>
+      <a href="#/profile">个人中心</a>
+      <span id="nav-auth">
+        <a href="#/login">登录</a>
+        <a href="#/register">注册</a>
+      </span>
+      <span id="nav-user" style="display:none;">
+        <span id="nav-username"></span>
+        <a href="#" id="nav-logout">退出</a>
+      </span>
+      <a href="#/admin" id="nav-admin" style="display:none;">后台管理</a>
+    </div>
+  </nav>
+
+  <main id="app-content">
+  </main>
+
+  <script type="module" src="/js/app.js"></script>
 </body>
 </html>
