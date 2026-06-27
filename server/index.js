@@ -18,6 +18,15 @@ app.use('/api/auth', authRoutes);
 const userRoutes = require('./routes/users');
 app.use('/api/users', userRoutes);
 
+const movieRoutes = require('./routes/movies');
+app.use('/api/movies', movieRoutes);
+
+const cinemaRoutes = require('./routes/cinemas');
+app.use('/api/cinemas', cinemaRoutes);
+
+const scheduleRoutes = require('./routes/schedules');
+app.use('/api/schedules', scheduleRoutes);
+
 // 所有非 API 请求返回 index.html（支持前端路由）
 app.get('/{*splat}', (req, res) => {
   if (req.path.startsWith('/api')) {
