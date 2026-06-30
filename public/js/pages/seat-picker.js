@@ -272,10 +272,14 @@ window.__confirmSeatSelection = async () => {
   }
 };
 
+let countdownTimer = null;
+let countdownSeconds = 0;
+
 function showOrderSummary(lockResult) {
-  const { order_no, seats: orderSeats, total_price, unit_price } = lockResult;
+  const { order_no, seats: orderSeats, total_price, unit_price, expires_in } = lockResult;
 
   const seatLabels = orderSeats.map(s => s.label).join(', ');
+  countdownSeconds = expires_in || 15 * 60;
 
   // Create modal overlay
   const overlay = document.createElement('div');
@@ -290,14 +294,37 @@ function showOrderSummary(lockResult) {
     <div class="card" style="max-width:420px; width:90%; position:relative;">
       <div class="card-body">
         <h3 style="margin-bottom:16px; text-align:center;">订单确认</h3>
+        <div style="background:#fff3cd; border-radius:8px; padding:10px; margin-bottom:12px; text-align:center;">
+          <span style="color:#856404; font-size:14px;">请在 </span>
+          <span id="countdown-display" style="color:#e94560; font-weight:bold; font-size:16px;">15:00</span>
+          <span style="color:#856404; font-size:14px;"> 内完成支付，超时订单将自动取消</span>
+        </div>
         <div style="margin-bottom:12px;">
           <p style="color:#666; margin-bottom:4px;">订单号: <strong>${order_no}</strong></p>
           <p style="color:#666; margin-bottom:4px;">座位: ${seatLabels}</p>
           <p style="color:#666; margin-bottom:4px;">单价: ¥${unit_price}</p>
           <p style="color:#666; margin-bottom:4px;">数量: ${orderSeats.length}张</p>
         </div>
+
+        <div style="margin-bottom:12px; border:1px solid #eee; border-radius:8px; padding:12px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <span style="color:#666;">使用优惠券</span>
+            <select id="coupon-select" style="padding:4px 8px; border:1px solid #ddd; border-radius:4px; max-width:200px;">
+              <option value="">不使用</option>
+            </select>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="color:#666;">使用积分 (<span id="user-points-display">0</span>)</span>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <input type="number" id="points-input" min="0" value="0" style="width:80px; padding:4px 8px; border:1px solid #ddd; border-radius:4px;">
+              <span style="color:#999; font-size:12px;">100积分=1元</span>
+            </div>
+          </div>
+        </div>
+
         <div style="text-align:center; padding:12px 0; border-top:1px solid #eee; margin-bottom:16px;">
-          <span style="font-size:1.4rem; font-weight:700; color:#e94560;">合计 ¥${total_price}</span>
+          <span style="color:#999; font-size:13px;">应付 </span>
+          <span id="final-price" style="font-size:1.4rem; font-weight:700; color:#e94560;">¥${total_price}</span>
         </div>
         <div style="display:flex; gap:12px;">
           <button class="btn btn-secondary" style="flex:1;" onclick="window.__cancelOrder()">取消</button>
@@ -312,6 +339,116 @@ function showOrderSummary(lockResult) {
   // Store order info for payment
   window.__currentOrderId = orderId;
   window.__currentOrderSeats = selectedSeats;
+  window.__currentOrderPrice = total_price;
+
+  // Load user coupons and points
+  loadCheckoutDiscounts(total_price);
+
+  // Start countdown
+  startCountdown();
+}
+
+async function loadCheckoutDiscounts(originalPrice) {
+  try {
+    const [coupons, pointsData] = await Promise.all([
+      api.get('/coupons').catch(() => []),
+      api.get('/users/points').catch(() => ({ total: 0 })),
+    ]);
+
+    // Populate coupon select
+    const couponSelect = document.getElementById('coupon-select');
+    if (couponSelect && coupons.length > 0) {
+      coupons.filter(c => !c.used && new Date(c.expires_at) > new Date()).forEach(c => {
+        const label = c.type === 'discount'
+          ? `减${c.value}元 (满${c.min_amount || 0}可用)`
+          : `${c.type} ¥${c.value}`;
+        const option = document.createElement('option');
+        option.value = c.id;
+        option.textContent = label;
+        option.dataset.value = c.value;
+        option.dataset.minAmount = c.min_amount || 0;
+        couponSelect.appendChild(option);
+      });
+    }
+
+    // Show user points
+    const pointsDisplay = document.getElementById('user-points-display');
+    if (pointsDisplay) {
+      pointsDisplay.textContent = pointsData.total || 0;
+    }
+
+    // Bind price update events
+    const couponSel = document.getElementById('coupon-select');
+    const pointsInput = document.getElementById('points-input');
+    if (couponSel) couponSel.addEventListener('change', () => updateFinalPrice(originalPrice));
+    if (pointsInput) pointsInput.addEventListener('input', () => updateFinalPrice(originalPrice));
+
+  } catch (err) {
+    console.warn('加载优惠信息失败:', err);
+  }
+}
+
+function updateFinalPrice(originalPrice) {
+  let price = originalPrice;
+
+  // Apply coupon
+  const couponSelect = document.getElementById('coupon-select');
+  if (couponSelect && couponSelect.value) {
+    const option = couponSelect.options[couponSelect.selectedIndex];
+    const couponValue = parseFloat(option.dataset.value) || 0;
+    const minAmount = parseFloat(option.dataset.minAmount) || 0;
+    if (price >= minAmount) {
+      price = Math.max(0, price - couponValue);
+    }
+  }
+
+  // Apply points (100 points = 1 yuan)
+  const pointsInput = document.getElementById('points-input');
+  const userPoints = parseInt(document.getElementById('user-points-display')?.textContent || '0', 10);
+  if (pointsInput) {
+    let pointsToUse = parseInt(pointsInput.value, 10) || 0;
+    pointsToUse = Math.min(pointsToUse, userPoints);
+    pointsToUse = Math.min(pointsToUse, Math.floor(price * 100));
+    pointsInput.value = pointsToUse;
+    price = Math.max(0, price - pointsToUse / 100);
+  }
+
+  const finalPriceEl = document.getElementById('final-price');
+  if (finalPriceEl) {
+    finalPriceEl.textContent = `¥${price.toFixed(2)}`;
+  }
+
+  window.__discountedPrice = price;
+}
+
+function startCountdown() {
+  if (countdownTimer) clearInterval(countdownTimer);
+
+  const display = document.getElementById('countdown-display');
+  if (!display) return;
+
+  countdownTimer = setInterval(() => {
+    countdownSeconds--;
+    if (countdownSeconds <= 0) {
+      clearInterval(countdownTimer);
+      display.textContent = '00:00';
+      display.style.color = '#cf1322';
+      alert('支付超时，订单已自动取消');
+      const modal = document.getElementById('order-modal');
+      if (modal) modal.remove();
+      window.location.reload();
+      return;
+    }
+
+    const min = Math.floor(countdownSeconds / 60);
+    const sec = countdownSeconds % 60;
+    display.textContent = `${String(min).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+
+    if (countdownSeconds <= 60) {
+      display.style.color = '#cf1322';
+      display.parentElement.style.background = '#fff2f0';
+    }
+  }, 1000);
 }
 
 window.__cancelOrder = () => {
@@ -332,8 +469,16 @@ window.__payOrder = async () => {
     payBtn.textContent = '支付中...';
   }
 
+  if (countdownTimer) clearInterval(countdownTimer);
+
   try {
-    const result = await api.post(`/orders/${window.__currentOrderId}/pay`);
+    const couponId = document.getElementById('coupon-select')?.value || null;
+    const pointsUsed = parseInt(document.getElementById('points-input')?.value, 10) || 0;
+
+    const result = await api.post(`/orders/${window.__currentOrderId}/pay`, {
+      coupon_id: couponId ? parseInt(couponId, 10) : null,
+      points_used: pointsUsed,
+    });
 
     // Remove modal
     const modal = document.getElementById('order-modal');

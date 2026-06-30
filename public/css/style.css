@@ -1088,3 +1088,122 @@ tr:hover td {
     justify-content: center;
   }
 }
+
+/* ===== Search Bar ===== */
+.nav-search {
+  flex: 1;
+  max-width: 320px;
+  margin: 0 24px;
+}
+
+.nav-search input {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.nav-search input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.nav-search input:focus {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: #e94560;
+}
+
+.nav-search .btn-primary {
+  background: #e94560;
+  border: 1px solid #e94560;
+}
+
+/* ===== Movie Detail Header ===== */
+.movie-detail-header {
+  padding: 24px;
+}
+
+.movie-detail-header img {
+  transition: transform 0.3s;
+}
+
+.movie-detail-header:hover img {
+  transform: scale(1.02);
+}
+
+/* ===== Schedule Button Hover ===== */
+.schedule-btn {
+  transition: all 0.2s;
+}
+
+.schedule-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(233, 69, 96, 0.3);
+}
+
+/* ===== Star Rating ===== */
+#rating-stars .star {
+  cursor: pointer;
+  transition: color 0.15s, transform 0.15s;
+}
+
+#rating-stars .star:hover {
+  transform: scale(1.2);
+}
+
+/* ===== Admin Sidebar Title ===== */
+.admin-sidebar-title {
+  padding: 12px 20px;
+  font-weight: 700;
+  color: #e94560;
+  font-size: 1.1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 8px;
+}
+
+/* ===== Chart Container ===== */
+.chart-container {
+  position: relative;
+  height: 300px;
+  width: 100%;
+}
+
+/* ===== Empty State Improvements ===== */
+.empty-state h2 {
+  color: #1a1a2e;
+  margin-bottom: 8px;
+}
+
+/* ===== Card Section Spacing ===== */
+.card + .card {
+  margin-top: 16px;
+}
+
+/* ===== Admin Charts Responsive ===== */
+@media (max-width: 768px) {
+  .nav-search {
+    display: none;
+  }
+
+  .hero-banner .hero-content {
+    flex-direction: column;
+    text-align: center;
+    padding: 24px;
+  }
+
+  .hero-banner .hero-poster {
+    width: 120px;
+  }
+
+  .hero-banner .hero-info h1 {
+    font-size: 1.4rem;
+  }
+
+  .movie-detail-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .movie-detail-header img {
+    width: 180px;
+  }
+}

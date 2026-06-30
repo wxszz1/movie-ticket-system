@@ -208,6 +208,20 @@ document.addEventListener('DOMContentLoaded', () => {
     renderAdmin(container);
   });
 
+  router.on('/search', async (container) => {
+    const { renderSearch } = await import('./pages/search.js');
+    renderSearch(container);
+  });
+
+  // Search form handler
+  document.getElementById('search-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const query = document.getElementById('search-input').value.trim();
+    if (query) {
+      window.location.hash = `#/search?q=${encodeURIComponent(query)}`;
+    }
+  });
+
   // Resolve initial route
   router.resolve();
 });

@@ -4,14 +4,16 @@ export async function renderHome(container) {
   container.innerHTML = '<div class="loading">加载中...</div>';
 
   try {
-    const [hotMovies, nowPlaying, upcoming] = await Promise.all([
+    const [hotMovies, nowPlaying, upcoming, recommendData] = await Promise.all([
       api.get('/movies/hot'),
       api.get('/movies?status=playing&limit=10'),
       api.get('/movies?status=upcoming&limit=6'),
+      api.get('/recommend/home').catch(() => []),
     ]);
 
     const hero = hotMovies[0];
     const genre = (hero.genre || '').split(',').slice(0, 2).join(' / ');
+    const isLoggedIn = window.__appState?.user;
 
     container.innerHTML = `
       <div class="hero-banner" onclick="location.hash='#/movie/${hero.id}'" style="cursor:pointer;">
@@ -27,6 +29,16 @@ export async function renderHome(container) {
           </div>
         </div>
       </div>
+
+      ${isLoggedIn && recommendData.length > 0 ? `
+        <div class="section">
+          <div class="section-header">
+            <h2>💡 猜你喜欢</h2>
+            <span class="more" style="color:#e94560; font-size:0.85rem;">根据你的观影偏好推荐</span>
+          </div>
+          <div class="movie-grid" id="recommend-list"></div>
+        </div>
+      ` : ''}
 
       <div class="section">
         <div class="section-header">
@@ -50,6 +62,9 @@ export async function renderHome(container) {
       </div>
     `;
 
+    if (isLoggedIn && recommendData.length > 0) {
+      renderMovieList(document.getElementById('recommend-list'), recommendData.slice(0, 5));
+    }
     renderMovieList(document.getElementById('hot-list'), hotMovies.slice(1, 6));
     renderMovieList(document.getElementById('now-playing'), nowPlaying.movies);
     renderMovieList(document.getElementById('upcoming'), upcoming.movies);

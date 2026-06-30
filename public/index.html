@@ -5,11 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>电影推荐与票务系统</title>
   <link rel="stylesheet" href="/css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 </head>
 <body>
   <nav class="navbar">
     <div class="nav-brand">
       <a href="#/">🎬 电影票务</a>
+    </div>
+    <div class="nav-search">
+      <form id="search-form" style="display:flex; gap:0;">
+        <input type="text" id="search-input" placeholder="搜索影片、导演、演员..." style="padding:6px 12px; border:none; border-radius:4px 0 0 4px; width:240px; font-size:14px; outline:none;">
+        <button type="submit" class="btn btn-primary" style="border-radius:0 4px 4px 0; padding:6px 14px;">搜索</button>
+      </form>
     </div>
     <div class="nav-links">
       <a href="#/">首页</a>

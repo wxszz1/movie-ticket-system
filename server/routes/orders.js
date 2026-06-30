@@ -49,15 +49,41 @@ router.post('/:id/pay', authMiddleware, (req, res) => {
 
   if (!order) return res.status(400).json({ error: '订单不存在或已支付' });
 
-  db.prepare("UPDATE orders SET status = 'paid', paid_at = datetime('now') WHERE id = ?").run(order.id);
+  let finalPrice = order.total_price;
+  const { coupon_id, points_used } = req.body;
+
+  // Apply coupon
+  if (coupon_id) {
+    const coupon = db.prepare('SELECT * FROM coupons WHERE id = ? AND user_id = ? AND used = 0').get(coupon_id, req.user.id);
+    if (coupon && new Date(coupon.expires_at) > new Date()) {
+      if (finalPrice >= (coupon.min_amount || 0)) {
+        finalPrice = Math.max(0, finalPrice - coupon.value);
+        db.prepare('UPDATE coupons SET used = 1 WHERE id = ?').run(coupon_id);
+      }
+    }
+  }
+
+  // Apply points (100 points = 1 yuan)
+  if (points_used > 0) {
+    const user = db.prepare('SELECT points FROM users WHERE id = ?').get(req.user.id);
+    const maxPoints = Math.min(user.points, Math.floor(finalPrice * 100));
+    const actualPoints = Math.min(points_used, maxPoints);
+    if (actualPoints > 0) {
+      finalPrice = Math.max(0, finalPrice - actualPoints / 100);
+      db.prepare('UPDATE users SET points = points - ? WHERE id = ?').run(actualPoints, req.user.id);
+    }
+  }
+
+  db.prepare("UPDATE orders SET total_price = ?, status = 'paid', paid_at = datetime('now') WHERE id = ?").run(finalPrice, order.id);
 
   const qrCode = Math.random().toString().slice(2, 8);
   db.prepare('UPDATE orders SET qr_code = ? WHERE id = ?').run(qrCode, order.id);
 
-  // Add points
-  db.prepare('UPDATE users SET points = points + 10 WHERE id = ?').run(req.user.id);
+  // Add points (10 points per yuan spent)
+  const pointsEarned = Math.floor(finalPrice);
+  db.prepare('UPDATE users SET points = points + ? WHERE id = ?').run(pointsEarned, req.user.id);
 
-  res.json({ message: '支付成功', qr_code: qrCode, points_earned: 10 });
+  res.json({ message: '支付成功', qr_code: qrCode, points_earned: pointsEarned, final_price: finalPrice });
 });
 
 // 取消订单

@@ -127,6 +127,21 @@ async function loadDashboard(el) {
       </div>
     </div>
 
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px">
+      <div class="card" style="padding:20px">
+        <h3 style="margin-bottom:16px">用户增长趋势</h3>
+        <div class="chart-container">
+          <canvas id="user-growth-chart"></canvas>
+        </div>
+      </div>
+      <div class="card" style="padding:20px">
+        <h3 style="margin-bottom:16px">票房统计</h3>
+        <div class="chart-container">
+          <canvas id="revenue-chart"></canvas>
+        </div>
+      </div>
+    </div>
+
     <div class="card" style="padding:20px">
       <h3 style="margin-bottom:16px">热度排行 Top 5</h3>
       ${data.hotMovies && data.hotMovies.length > 0 ? `
@@ -153,6 +168,110 @@ async function loadDashboard(el) {
       ` : '<p style="color:#888">暂无数据</p>'}
     </div>
   `;
+
+  // Render charts after DOM is ready
+  setTimeout(() => renderDashboardCharts(data), 100);
+}
+
+function renderDashboardCharts(data) {
+  // User Growth Chart
+  const growthCtx = document.getElementById('user-growth-chart');
+  if (growthCtx && typeof Chart !== 'undefined') {
+    const growthData = data.userGrowth || [];
+    const labels = growthData.map(d => d.date ? d.date.slice(5) : '');
+    const counts = growthData.map(d => d.count || 0);
+
+    // Fill missing dates for last 7 days
+    if (labels.length === 0) {
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        labels.push(`${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`);
+        counts.push(0);
+      }
+    }
+
+    new Chart(growthCtx, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          label: '新增用户',
+          data: counts,
+          borderColor: '#e94560',
+          backgroundColor: 'rgba(233,69,96,0.1)',
+          fill: true,
+          tension: 0.4,
+          pointRadius: 4,
+          pointBackgroundColor: '#e94560',
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { beginAtZero: true, ticks: { stepSize: 1 } },
+          x: { grid: { display: false } }
+        }
+      }
+    });
+  }
+
+  // Revenue Chart (by movie)
+  const revenueCtx = document.getElementById('revenue-chart');
+  if (revenueCtx && typeof Chart !== 'undefined') {
+    const hotMovies = data.hotMovies || [];
+    const labels = hotMovies.map(m => m.title.length > 6 ? m.title.slice(0, 6) + '...' : m.title);
+    const revenues = hotMovies.map(m => m.revenue || 0);
+    const orders = hotMovies.map(m => m.order_count || 0);
+
+    new Chart(revenueCtx, {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [
+          {
+            label: '营收(元)',
+            data: revenues,
+            backgroundColor: 'rgba(233,69,96,0.7)',
+            borderRadius: 4,
+            yAxisID: 'y',
+          },
+          {
+            label: '订单数',
+            data: orders,
+            backgroundColor: 'rgba(22,119,255,0.7)',
+            borderRadius: 4,
+            yAxisID: 'y1',
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'top' }
+        },
+        scales: {
+          y: {
+            type: 'linear',
+            position: 'left',
+            beginAtZero: true,
+            title: { display: true, text: '营收(元)' }
+          },
+          y1: {
+            type: 'linear',
+            position: 'right',
+            beginAtZero: true,
+            grid: { drawOnChartArea: false },
+            title: { display: true, text: '订单数' }
+          },
+          x: { grid: { display: false } }
+        }
+      }
+    });
+  }
 }
 
 /* ============================================================
